@@ -33,32 +33,30 @@ module.exports.productController = {
         sizes,
         articul,
       } = req.body;
-      
+
       const photo = [];
-      
+
       if (req.files && req.files.length > 0) {
         for (let i = 0; i < req.files.length; i++) {
           const photoPath = req.files[i].path;
           photo.push(photoPath);
         }
       }
-      
+
       const product = await Product.create({
         name,
         photo,
         title,
         materials,
         price,
-        categories: JSON.parse(categories),
+        categories,
         globalCategory,
-        sizes,
+        sizes: JSON.parse(sizes),
         rating,
         articul,
       });
-      
-      const data = await product
-        .populate("categories globalCategory")
 
+      const data = await product.populate("categories globalCategory");
       res.json(data);
     } catch (error) {
       return res.status(400).json({ error: error.toString() });
